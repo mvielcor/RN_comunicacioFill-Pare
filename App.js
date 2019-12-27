@@ -6,67 +6,43 @@
  * @flow
  */
 
-import React, { Component } from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  TextInput,
-} from 'react-native';
-import calculaLletraNif, { hola } from './esborrar';
+import React, {Component} from 'react';
+import {StyleSheet, View, Text} from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+
+import Nif from './components/Nif'; //Importem el component NIF des de la ruta indicada
 
 export default class App extends Component {
-
   constructor(props) {
     super(props);
-    this.state = {
-      elDNIintroduit: undefined,
-      lletra:undefined,
-    }
+    this.state = {};
   }
-
-  guardaDNI(valor) {
-    if (valor.length === 8) {
-      this.setState({ elDNIintroduit: valor })
-      let lalletra = calculaLletraNif(parseInt(valor));
-      this.setState({ lletra: lalletra })
-    }
-  }
+  // Aquesta funció es defineix al component pare,
+  // i és la que utilitza el component fill
+  // per a passar-li dades al component pare.
+  getNifILletra=({dni,lletra})=>{  // El component fill li passa el dni i la lletra al component pare.
+    console.log("Estic al component Pare!")
+    console.log(dni+"-"+lletra);
+    this.setState({dni:dni, lletra:lletra}); // El component pare guarda al seu estat el dni i la lletra que li ha passat el component fill
+  };
 
   render() {
     return (
-      <View>
-        <TextInput style={{ underlineColorAndroid: 'blue', borderWidth: 2 }}
-          placeholder='DNI'
-          placeholderTextColor='#FF0000'
-          maxLength={8}
-          keyboardType='number-pad'
-          onChangeText={(text) => this.guardaDNI(text)}
-        >
-        </TextInput>
-        <TextInput style={{ underlineColorAndroid: 'blue', borderWidth: 2 }}
-          placeholder='LLETRA'
-          placeholderTextColor='#FF0000'
-          editable={false}
-          value={this.state.lletra}
-        >
-        </TextInput>
-      </View >
+      <View style={{borderColor:'green', borderWidth:4,}}>
+        <Text style={{fontSize: 25, fontWeight: 'bold', textAlign:'center'}}>Formulari Dades Usuari:</Text>
+        <Nif tornaNif={this.getNifILletra} color='white'> </Nif>
+        <Text>
+          {/* Mostrem al component pare, les dades rebudes del component fill */}
+          He rebut del component fill:{' '}
+          {this.state.dni !== undefined
+            ? this.state.dni + '-' + this.state.lletra
+            : '-'}
+        </Text>
+      </View>
     );
   }
-
-};
+}
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -106,5 +82,3 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
 });
-
-
